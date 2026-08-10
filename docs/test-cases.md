@@ -1,14 +1,14 @@
-# Testfallkatalog – Web End-to-End
+# Testfallkatalog – Web und API
 
-Dieser Katalog dokumentiert die aktuell automatisierten Testszenarien für die öffentliche Demoanwendung [SauceDemo](https://www.saucedemo.com/). Er verbindet fachliches Testdesign mit den zugehörigen Playwright-Tests.
+Dieser Katalog dokumentiert die aktuell automatisierten Testszenarien für die öffentlichen Testsysteme [SauceDemo](https://www.saucedemo.com/) und [JSONPlaceholder](https://jsonplaceholder.typicode.com/). Er verbindet fachliches Testdesign mit den zugehörigen Playwright-Tests.
 
 ## Testumgebung
 
 | Merkmal | Wert |
 | --- | --- |
-| Testobjekt | SauceDemo |
-| Teststufe | End-to-End-Systemtest |
-| Browser | Chromium |
+| Testobjekte | SauceDemo (Web) und JSONPlaceholder (API) |
+| Teststufen | End-to-End-Systemtest und API-Test |
+| Browser | Chromium für Webtests; für den API-Test nicht erforderlich |
 | Automatisierung | Playwright Test mit TypeScript |
 | Lokale Plattform | macOS |
 | CI-Plattform | Ubuntu Linux über GitHub Actions |
@@ -20,6 +20,7 @@ Dieser Katalog dokumentiert die aktuell automatisierten Testszenarien für die �
 | QOL-WEB-LOGIN-001 | Login | positiv | hoch | [`tests/login.spec.ts`](../tests/login.spec.ts) |
 | QOL-WEB-LOGIN-002 | Login | negativ | hoch | [`tests/login.spec.ts`](../tests/login.spec.ts) |
 | QOL-WEB-CART-001 | Warenkorb | positiv | hoch | [`tests/cart.spec.ts`](../tests/cart.spec.ts) |
+| QOL-API-POSTS-001 | Posts API | positiv | hoch | [`tests/api/posts.spec.ts`](../tests/api/posts.spec.ts) |
 
 ## QOL-WEB-LOGIN-001 – Erfolgreiche Anmeldung
 
@@ -121,8 +122,43 @@ Dieser Katalog dokumentiert die aktuell automatisierten Testszenarien für die �
 | 5 | Die Anzahl der Warenkorbeinträge prüfen. | Genau ein Eintrag ist vorhanden. |
 | 6 | Den Produktnamen im Warenkorb prüfen. | „Sauce Labs Backpack“ ist sichtbar. |
 
+## QOL-API-POSTS-001 – Einzelnen Beitrag abrufen
+
+| Feld | Inhalt |
+| --- | --- |
+| Ziel | Prüfen, dass ein vorhandener Beitrag erfolgreich als JSON mit der erwarteten Struktur und den erwarteten Identifikatoren zurückgegeben wird. |
+| Priorität | hoch |
+| Testtyp | positiv |
+| Automatisierungsstatus | automatisiert |
+
+### Voraussetzungen
+
+- JSONPlaceholder ist erreichbar.
+- Der Testdatensatz `/posts/1` ist verfügbar.
+- Für den öffentlichen Lesezugriff ist keine Authentifizierung erforderlich.
+
+### Testdaten
+
+| Eingabe | Wert |
+| --- | --- |
+| HTTP-Methode | `GET` |
+| Endpunkt | `https://jsonplaceholder.typicode.com/posts/1` |
+| Erwartete Beitrags-ID | `1` |
+| Erwartete Benutzer-ID | `1` |
+
+### Testschritte
+
+| Nr. | Aktion | Erwartetes Ergebnis |
+| --- | --- | --- |
+| 1 | Eine GET-Anfrage an `/posts/1` senden. | Der Server beantwortet die Anfrage. |
+| 2 | Den HTTP-Status prüfen. | Der Statuscode ist `200`. |
+| 3 | Den Content-Type prüfen. | Der Antworttyp enthält `application/json`. |
+| 4 | Die JSON-Struktur prüfen. | Die Antwort enthält genau `userId`, `id`, `title` und `body` mit den erwarteten Datentypen. |
+| 5 | Die Identifikatoren prüfen. | `id` und `userId` haben jeweils den Wert `1`. |
+| 6 | Die Textfelder prüfen. | `title` und `body` sind nicht leer. |
+
 ## Bekannte Grenzen
 
-- Die Ergebnisse hängen von der Erreichbarkeit und dem aktuellen Zustand der externen Demoanwendung ab.
-- Der Katalog deckt derzeit nur Chromium ab.
-- Checkout, API, Datenbank und mobile Szenarien sind noch nicht Bestandteil dieses Katalogs.
+- Die Ergebnisse hängen von der Erreichbarkeit und dem aktuellen Zustand der externen Testsysteme ab.
+- Die Webtests decken derzeit nur Chromium ab.
+- Checkout, negative API-Szenarien, Datenbank- und mobile Tests sind noch nicht Bestandteil dieses Katalogs.

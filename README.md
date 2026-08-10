@@ -6,7 +6,8 @@ QualityOps Lab ist ein praxisnahes QA-Engineering-Portfolio. Das Projekt zeigt s
 
 ## Aktueller Stand
 
-- drei automatisierte End-to-End-Tests mit Playwright und TypeScript
+- drei automatisierte Web-End-to-End-Tests mit Playwright und TypeScript
+- ein positiver API-Test ohne zusätzlichen Browser
 - positive und negative Login-Abdeckung
 - zusammenhängender Warenkorb-Ablauf
 - strukturierter Testfallkatalog mit Rückverweisen auf die Automatisierung
@@ -14,7 +15,7 @@ QualityOps Lab ist ein praxisnahes QA-Engineering-Portfolio. Das Projekt zeigt s
 - automatische Ausführung bei Pushes und Pull Requests über GitHub Actions
 - HTML-Testbericht als CI-Artefakt mit 30 Tagen Aufbewahrung
 
-Als öffentliches Testobjekt dient die für Browser-Tests vorgesehene Demoanwendung [SauceDemo](https://www.saucedemo.com/). Es werden ausschließlich die dort veröffentlichten Testzugangsdaten verwendet.
+Als öffentliche Testobjekte dienen die für Browser-Tests vorgesehene Demoanwendung [SauceDemo](https://www.saucedemo.com/) und die Test-API [JSONPlaceholder](https://jsonplaceholder.typicode.com/). Es werden keine produktiven Konten oder privaten Zugangsdaten verwendet.
 
 ## Automatisierte Testszenarien
 
@@ -23,6 +24,7 @@ Als öffentliches Testobjekt dient die für Browser-Tests vorgesehene Demoanwend
 | Login | positiv | Ein gültiger Benutzer erreicht die Produktübersicht. |
 | Login | negativ | Ein falsches Passwort zeigt eine Fehlermeldung und verhindert die Weiterleitung. |
 | Warenkorb | positiv | Ein ausgewähltes Produkt erhöht den Zähler und erscheint als einziger Warenkorbeintrag. |
+| API – Beitrag | positiv | `GET /posts/1` liefert Status 200, JSON und die erwartete Datenstruktur. |
 
 Die vollständigen Voraussetzungen, Testdaten, Schritte und erwarteten Ergebnisse stehen im [Testfallkatalog](docs/test-cases.md).
 
@@ -73,6 +75,7 @@ QualityOps-Lab/
 ├── .github/workflows/playwright.yml  # Automatische CI-Testausführung
 ├── docs/test-cases.md                 # Strukturierter Testfallkatalog
 ├── tests/
+│   ├── api/posts.spec.ts              # Positiver GET-API-Test
 │   ├── cart.spec.ts                  # Warenkorb-Ablauf
 │   └── login.spec.ts                 # Positive und negative Login-Tests
 ├── playwright.config.ts              # Gemeinsame Playwright-Einstellungen
@@ -83,14 +86,14 @@ QualityOps-Lab/
 ## Aktuelle Grenzen
 
 - Die Browser-Tests laufen derzeit ausschließlich mit Chromium.
-- Die Tests sind von der Erreichbarkeit und Stabilität der externen Demoanwendung abhängig.
-- API-Tests, SQL-Prüfungen und Mobile-QA-Szenarien sind noch nicht umgesetzt.
+- Die Tests sind von der Erreichbarkeit und Stabilität der externen Testsysteme abhängig.
+- Negative API-Tests, SQL-Prüfungen und Mobile-QA-Szenarien sind noch nicht umgesetzt.
 - Die Tests verwenden bewusst öffentliche Demo-Zugangsdaten und keine produktiven Konten.
 
 ## Geplante Erweiterungen
 
 - weitere fachliche Web-Testfälle
-- API-Tests mit positiven und negativen Szenarien
+- negative API-Tests und weitere Endpunkte
 - einfache SQL- und Datenprüfungen
 - professionelle Bug Reports und eine kurze QA-Fallstudie
 - optional eine separate Mobile-QA-Fallstudie
