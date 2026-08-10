@@ -9,6 +9,7 @@ QualityOps Lab ist ein praxisnahes QA-Engineering-Portfolio. Das Projekt zeigt s
 - drei automatisierte End-to-End-Tests mit Playwright und TypeScript
 - positive und negative Login-Abdeckung
 - zusammenhängender Warenkorb-Ablauf
+- strukturierter Testfallkatalog mit Rückverweisen auf die Automatisierung
 - lokale Ausführung mit Chromium
 - automatische Ausführung bei Pushes und Pull Requests über GitHub Actions
 - HTML-Testbericht als CI-Artefakt mit 30 Tagen Aufbewahrung
@@ -22,6 +23,8 @@ Als öffentliches Testobjekt dient die für Browser-Tests vorgesehene Demoanwend
 | Login | positiv | Ein gültiger Benutzer erreicht die Produktübersicht. |
 | Login | negativ | Ein falsches Passwort zeigt eine Fehlermeldung und verhindert die Weiterleitung. |
 | Warenkorb | positiv | Ein ausgewähltes Produkt erhöht den Zähler und erscheint als einziger Warenkorbeintrag. |
+
+Die vollständigen Voraussetzungen, Testdaten, Schritte und erwarteten Ergebnisse stehen im [Testfallkatalog](docs/test-cases.md).
 
 ## Technik
 
@@ -68,6 +71,7 @@ GitHub richtet dafür eine frische Linux-Umgebung mit Node.js 24 und Chromium ei
 ```text
 QualityOps-Lab/
 ├── .github/workflows/playwright.yml  # Automatische CI-Testausführung
+├── docs/test-cases.md                 # Strukturierter Testfallkatalog
 ├── tests/
 │   ├── cart.spec.ts                  # Warenkorb-Ablauf
 │   └── login.spec.ts                 # Positive und negative Login-Tests
