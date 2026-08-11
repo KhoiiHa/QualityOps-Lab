@@ -7,7 +7,7 @@ QualityOps Lab ist ein praxisnahes QA-Engineering-Portfolio. Das Projekt zeigt s
 ## Aktueller Stand
 
 - drei automatisierte Web-End-to-End-Tests mit Playwright und TypeScript
-- ein positiver API-Test ohne zusätzlichen Browser
+- zwei API-Tests mit positiver und negativer Abdeckung ohne zusätzlichen Browser
 - positive und negative Login-Abdeckung
 - zusammenhängender Warenkorb-Ablauf
 - strukturierter Testfallkatalog mit Rückverweisen auf die Automatisierung
@@ -25,6 +25,7 @@ Als öffentliche Testobjekte dienen die für Browser-Tests vorgesehene Demoanwen
 | Login | negativ | Ein falsches Passwort zeigt eine Fehlermeldung und verhindert die Weiterleitung. |
 | Warenkorb | positiv | Ein ausgewähltes Produkt erhöht den Zähler und erscheint als einziger Warenkorbeintrag. |
 | API – Beitrag | positiv | `GET /posts/1` liefert Status 200, JSON und die erwartete Datenstruktur. |
+| API – Beitrag | negativ | `GET /posts/999999` liefert Status 404 und ein kontrolliertes leeres JSON-Objekt. |
 
 Die vollständigen Voraussetzungen, Testdaten, Schritte und erwarteten Ergebnisse stehen im [Testfallkatalog](docs/test-cases.md).
 
@@ -75,7 +76,7 @@ QualityOps-Lab/
 ├── .github/workflows/playwright.yml  # Automatische CI-Testausführung
 ├── docs/test-cases.md                 # Strukturierter Testfallkatalog
 ├── tests/
-│   ├── api/posts.spec.ts              # Positiver GET-API-Test
+│   ├── api/posts.spec.ts              # Positive und negative GET-API-Tests
 │   ├── cart.spec.ts                  # Warenkorb-Ablauf
 │   └── login.spec.ts                 # Positive und negative Login-Tests
 ├── playwright.config.ts              # Gemeinsame Playwright-Einstellungen
@@ -87,13 +88,13 @@ QualityOps-Lab/
 
 - Die Browser-Tests laufen derzeit ausschließlich mit Chromium.
 - Die Tests sind von der Erreichbarkeit und Stabilität der externen Testsysteme abhängig.
-- Negative API-Tests, SQL-Prüfungen und Mobile-QA-Szenarien sind noch nicht umgesetzt.
+- Weitere API-Methoden, SQL-Prüfungen und Mobile-QA-Szenarien sind noch nicht umgesetzt.
 - Die Tests verwenden bewusst öffentliche Demo-Zugangsdaten und keine produktiven Konten.
 
 ## Geplante Erweiterungen
 
 - weitere fachliche Web-Testfälle
-- negative API-Tests und weitere Endpunkte
+- weitere API-Endpunkte und HTTP-Methoden
 - einfache SQL- und Datenprüfungen
 - professionelle Bug Reports und eine kurze QA-Fallstudie
 - optional eine separate Mobile-QA-Fallstudie

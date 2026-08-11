@@ -17,3 +17,11 @@ test('GET /posts/1 liefert den erwarteten Beitrag', async ({ request }) => {
   expect(post.title).not.toHaveLength(0);
   expect(post.body).not.toHaveLength(0);
 });
+
+test('GET eines nicht vorhandenen Beitrags liefert 404', async ({ request }) => {
+  const response = await request.get('https://jsonplaceholder.typicode.com/posts/999999');
+
+  expect(response.status()).toBe(404);
+  expect(response.headers()['content-type']).toContain('application/json');
+  expect(await response.json()).toEqual({});
+});

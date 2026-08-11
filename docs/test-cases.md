@@ -21,6 +21,7 @@ Dieser Katalog dokumentiert die aktuell automatisierten Testszenarien für die �
 | QOL-WEB-LOGIN-002 | Login | negativ | hoch | [`tests/login.spec.ts`](../tests/login.spec.ts) |
 | QOL-WEB-CART-001 | Warenkorb | positiv | hoch | [`tests/cart.spec.ts`](../tests/cart.spec.ts) |
 | QOL-API-POSTS-001 | Posts API | positiv | hoch | [`tests/api/posts.spec.ts`](../tests/api/posts.spec.ts) |
+| QOL-API-POSTS-002 | Posts API | negativ | hoch | [`tests/api/posts.spec.ts`](../tests/api/posts.spec.ts) |
 
 ## QOL-WEB-LOGIN-001 – Erfolgreiche Anmeldung
 
@@ -157,8 +158,40 @@ Dieser Katalog dokumentiert die aktuell automatisierten Testszenarien für die �
 | 5 | Die Identifikatoren prüfen. | `id` und `userId` haben jeweils den Wert `1`. |
 | 6 | Die Textfelder prüfen. | `title` und `body` sind nicht leer. |
 
+## QOL-API-POSTS-002 – Nicht vorhandenen Beitrag abrufen
+
+| Feld | Inhalt |
+| --- | --- |
+| Ziel | Prüfen, dass die API eine Anfrage nach einem nicht vorhandenen Beitrag kontrolliert und im erwarteten JSON-Format beantwortet. |
+| Priorität | hoch |
+| Testtyp | negativ |
+| Automatisierungsstatus | automatisiert |
+
+### Voraussetzungen
+
+- JSONPlaceholder ist erreichbar.
+- Unter `/posts/999999` ist kein Beitrag vorhanden.
+- Für den öffentlichen Lesezugriff ist keine Authentifizierung erforderlich.
+
+### Testdaten
+
+| Eingabe | Wert |
+| --- | --- |
+| HTTP-Methode | `GET` |
+| Endpunkt | `https://jsonplaceholder.typicode.com/posts/999999` |
+| Nicht vorhandene Beitrags-ID | `999999` |
+
+### Testschritte
+
+| Nr. | Aktion | Erwartetes Ergebnis |
+| --- | --- | --- |
+| 1 | Eine GET-Anfrage an `/posts/999999` senden. | Der Server beantwortet die Anfrage kontrolliert. |
+| 2 | Den HTTP-Status prüfen. | Der Statuscode ist `404`. |
+| 3 | Den Content-Type prüfen. | Der Antworttyp enthält `application/json`. |
+| 4 | Den JSON-Körper prüfen. | Die Antwort ist das leere JSON-Objekt `{}` und enthält keine erfundenen Ressourcendaten. |
+
 ## Bekannte Grenzen
 
 - Die Ergebnisse hängen von der Erreichbarkeit und dem aktuellen Zustand der externen Testsysteme ab.
 - Die Webtests decken derzeit nur Chromium ab.
-- Checkout, negative API-Szenarien, Datenbank- und mobile Tests sind noch nicht Bestandteil dieses Katalogs.
+- Checkout, weitere API-Methoden, Datenbank- und mobile Tests sind noch nicht Bestandteil dieses Katalogs.
