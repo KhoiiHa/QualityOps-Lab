@@ -1,14 +1,15 @@
-# Testfallkatalog – Web und API
+# Testfallkatalog – Web, API und Datenbank
 
-Dieser Katalog dokumentiert die aktuell automatisierten Testszenarien für die öffentlichen Testsysteme [SauceDemo](https://www.saucedemo.com/) und [JSONPlaceholder](https://jsonplaceholder.typicode.com/). Er verbindet fachliches Testdesign mit den zugehörigen Playwright-Tests.
+Dieser Katalog dokumentiert die aktuell automatisierten Testszenarien für die öffentlichen Testsysteme [SauceDemo](https://www.saucedemo.com/) und [JSONPlaceholder](https://jsonplaceholder.typicode.com/) sowie für eine lokale In-Memory-Datenbank. Er verbindet fachliches Testdesign mit den zugehörigen Playwright-Tests.
 
 ## Testumgebung
 
 | Merkmal | Wert |
 | --- | --- |
-| Testobjekte | SauceDemo (Web) und JSONPlaceholder (API) |
-| Teststufen | End-to-End-Systemtest und API-Test |
-| Browser | Chromium für Webtests; für den API-Test nicht erforderlich |
+| Testobjekte | SauceDemo (Web), JSONPlaceholder (API) und feste Bestelldaten (SQLite) |
+| Teststufen | End-to-End-Systemtest, API-Test und Datenprüfung |
+| Browser | Chromium für Webtests; für API- und Datenprüfungen nicht erforderlich |
+| Datenbank | SQLite über `node:sqlite`, bei jedem Test neu im Arbeitsspeicher erzeugt |
 | Automatisierung | Playwright Test mit TypeScript |
 | Lokale Plattform | macOS |
 | CI-Plattform | Ubuntu Linux über GitHub Actions |
@@ -22,6 +23,7 @@ Dieser Katalog dokumentiert die aktuell automatisierten Testszenarien für die �
 | QOL-WEB-CART-001 | Warenkorb | positiv | hoch | [`tests/cart.spec.ts`](../tests/cart.spec.ts) |
 | QOL-API-POSTS-001 | Posts API | positiv | hoch | [`tests/api/posts.spec.ts`](../tests/api/posts.spec.ts) |
 | QOL-API-POSTS-002 | Posts API | negativ | hoch | [`tests/api/posts.spec.ts`](../tests/api/posts.spec.ts) |
+| QOL-DATA-ORDERS-001 | Bestelldaten | positiv | hoch | [`tests/database/orders.spec.ts`](../tests/database/orders.spec.ts) |
 
 ## QOL-WEB-LOGIN-001 – Erfolgreiche Anmeldung
 
@@ -190,8 +192,42 @@ Dieser Katalog dokumentiert die aktuell automatisierten Testszenarien für die �
 | 3 | Den Content-Type prüfen. | Der Antworttyp enthält `application/json`. |
 | 4 | Den JSON-Körper prüfen. | Die Antwort ist das leere JSON-Objekt `{}` und enthält keine erfundenen Ressourcendaten. |
 
+## QOL-DATA-ORDERS-001 – Bezahlte Bestellungen aggregieren
+
+| Feld | Inhalt |
+| --- | --- |
+| Ziel | Prüfen, dass eine SQL-Abfrage ausschließlich bezahlte Bestellungen berücksichtigt und deren Anzahl sowie Gesamtsumme korrekt berechnet. |
+| Priorität | hoch |
+| Testtyp | positiv |
+| Automatisierungsstatus | automatisiert |
+
+### Voraussetzungen
+
+- Node.js 24 mit dem integrierten Modul `node:sqlite` ist verfügbar.
+- Der Test erzeugt eine neue, leere SQLite-Datenbank im Arbeitsspeicher.
+- Es wird keine bestehende oder dauerhafte Datenbank verändert.
+
+### Testdaten
+
+| Bestell-ID | Status | Betrag in Cent |
+| --- | --- | --- |
+| `1` | `PAID` | `1299` |
+| `2` | `PAID` | `2500` |
+| `3` | `CANCELLED` | `999` |
+| `4` | `PAID` | `3201` |
+
+### Testschritte
+
+| Nr. | Aktion | Erwartetes Ergebnis |
+| --- | --- | --- |
+| 1 | Eine leere In-Memory-Datenbank und die Tabelle `orders` erzeugen. | Die Tabelle akzeptiert Bestell-ID, Status und einen nicht negativen Betrag in Cent. |
+| 2 | Die vier festgelegten Bestellungen einfügen. | Drei bezahlte und eine stornierte Bestellung sind gespeichert. |
+| 3 | Anzahl und Gesamtsumme für den Status `PAID` per SQL abfragen. | Die stornierte Bestellung wird durch den Statusfilter ausgeschlossen. |
+| 4 | Das Abfrageergebnis prüfen. | Die Anzahl ist `3` und die Gesamtsumme beträgt `7000` Cent. |
+| 5 | Die Datenbank schließen. | Die temporären Testdaten werden vollständig verworfen. |
+
 ## Bekannte Grenzen
 
 - Die Ergebnisse hängen von der Erreichbarkeit und dem aktuellen Zustand der externen Testsysteme ab.
 - Die Webtests decken derzeit nur Chromium ab.
-- Checkout, weitere API-Methoden, Datenbank- und mobile Tests sind noch nicht Bestandteil dieses Katalogs.
+- Checkout, weitere API-Methoden, persistente Datenbanken, komplexere SQL-Abfragen und mobile Tests sind noch nicht Bestandteil dieses Katalogs.

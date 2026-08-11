@@ -8,6 +8,7 @@ QualityOps Lab ist ein praxisnahes QA-Engineering-Portfolio. Das Projekt zeigt s
 
 - drei automatisierte Web-End-to-End-Tests mit Playwright und TypeScript
 - zwei API-Tests mit positiver und negativer Abdeckung ohne zusätzlichen Browser
+- eine reproduzierbare SQL-Datenprüfung mit einer temporären In-Memory-Datenbank
 - positive und negative Login-Abdeckung
 - zusammenhängender Warenkorb-Ablauf
 - strukturierter Testfallkatalog mit Rückverweisen auf die Automatisierung
@@ -15,7 +16,7 @@ QualityOps Lab ist ein praxisnahes QA-Engineering-Portfolio. Das Projekt zeigt s
 - automatische Ausführung bei Pushes und Pull Requests über GitHub Actions
 - HTML-Testbericht als CI-Artefakt mit 30 Tagen Aufbewahrung
 
-Als öffentliche Testobjekte dienen die für Browser-Tests vorgesehene Demoanwendung [SauceDemo](https://www.saucedemo.com/) und die Test-API [JSONPlaceholder](https://jsonplaceholder.typicode.com/). Es werden keine produktiven Konten oder privaten Zugangsdaten verwendet.
+Als öffentliche Testobjekte dienen die für Browser-Tests vorgesehene Demoanwendung [SauceDemo](https://www.saucedemo.com/) und die Test-API [JSONPlaceholder](https://jsonplaceholder.typicode.com/). Die SQL-Prüfung verwendet ausschließlich feste Testdaten in einer temporären Datenbank im Arbeitsspeicher. Es werden keine produktiven Konten, privaten Zugangsdaten oder dauerhaften Datenbankdateien verwendet.
 
 ## Automatisierte Testszenarien
 
@@ -26,6 +27,7 @@ Als öffentliche Testobjekte dienen die für Browser-Tests vorgesehene Demoanwen
 | Warenkorb | positiv | Ein ausgewähltes Produkt erhöht den Zähler und erscheint als einziger Warenkorbeintrag. |
 | API – Beitrag | positiv | `GET /posts/1` liefert Status 200, JSON und die erwartete Datenstruktur. |
 | API – Beitrag | negativ | `GET /posts/999999` liefert Status 404 und ein kontrolliertes leeres JSON-Objekt. |
+| Datenbank – Bestellungen | positiv | Eine SQL-Abfrage berücksichtigt nur bezahlte Bestellungen und berechnet deren Anzahl und Gesamtsumme korrekt. |
 
 Die vollständigen Voraussetzungen, Testdaten, Schritte und erwarteten Ergebnisse stehen im [Testfallkatalog](docs/test-cases.md).
 
@@ -36,6 +38,7 @@ Die vollständigen Voraussetzungen, Testdaten, Schritte und erwarteten Ergebniss
 - TypeScript 7
 - Playwright Test 1.62
 - Chromium
+- SQLite im Arbeitsspeicher über das in Node.js integrierte `node:sqlite`
 - GitHub Actions auf Ubuntu Linux
 
 ## Projekt lokal ausführen
@@ -77,8 +80,9 @@ QualityOps-Lab/
 ├── docs/test-cases.md                 # Strukturierter Testfallkatalog
 ├── tests/
 │   ├── api/posts.spec.ts              # Positive und negative GET-API-Tests
-│   ├── cart.spec.ts                  # Warenkorb-Ablauf
-│   └── login.spec.ts                 # Positive und negative Login-Tests
+│   ├── database/orders.spec.ts        # SQL-Prüfung von Bestelldaten
+│   ├── cart.spec.ts                   # Warenkorb-Ablauf
+│   └── login.spec.ts                  # Positive und negative Login-Tests
 ├── playwright.config.ts              # Gemeinsame Playwright-Einstellungen
 ├── package.json                      # Abhängigkeiten und npm-Skripte
 └── package-lock.json                 # Reproduzierbar festgelegte Paketversionen
@@ -88,13 +92,13 @@ QualityOps-Lab/
 
 - Die Browser-Tests laufen derzeit ausschließlich mit Chromium.
 - Die Tests sind von der Erreichbarkeit und Stabilität der externen Testsysteme abhängig.
-- Weitere API-Methoden, SQL-Prüfungen und Mobile-QA-Szenarien sind noch nicht umgesetzt.
+- Persistente Datenbanken, komplexere SQL-Abfragen und Mobile-QA-Szenarien sind noch nicht umgesetzt.
 - Die Tests verwenden bewusst öffentliche Demo-Zugangsdaten und keine produktiven Konten.
 
 ## Geplante Erweiterungen
 
 - weitere fachliche Web-Testfälle
 - weitere API-Endpunkte und HTTP-Methoden
-- einfache SQL- und Datenprüfungen
+- weitere SQL- und Datenprüfungen, zum Beispiel mit Tabellenbeziehungen
 - professionelle Bug Reports und eine kurze QA-Fallstudie
 - optional eine separate Mobile-QA-Fallstudie
