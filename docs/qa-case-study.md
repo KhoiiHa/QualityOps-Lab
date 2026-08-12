@@ -5,8 +5,8 @@
 QualityOps Lab ist ein eigenständiges QA-Engineering-Portfolio. Untersucht werden eine öffentliche Web-Demo, eine öffentliche Test-API und feste Bestelldaten in einer temporären SQLite-Datenbank. Ziel ist nicht eine möglichst hohe Testanzahl, sondern ein kleiner, nachvollziehbarer Nachweis für Testdesign, Automatisierung, Datenprüfung und kontinuierliche Testausführung.
 
 - **Stand:** 12. August 2026
-- **Automatisierungsstatus:** 8 von 8 dokumentierten Testfällen automatisiert
-- **Letzte lokale Verifikation:** 8 Tests erfolgreich
+- **Automatisierungsstatus:** 9 von 9 dokumentierten Testfällen automatisiert
+- **Letzte lokale Verifikation:** 9 Tests erfolgreich
 - **CI:** automatische Ausführung über [GitHub Actions](https://github.com/KhoiiHa/QualityOps-Lab/actions)
 
 ## Ausgangslage und Qualitätsziel
@@ -17,7 +17,7 @@ Der erste Projektumfang konzentriert sich deshalb auf drei überprüfbare Qualit
 
 1. Zentrale Benutzerabläufe der Webanwendung funktionieren und reagieren kontrolliert auf ungültige Eingaben.
 2. Die API liefert bei vorhandenen und nicht vorhandenen Ressourcen den erwarteten Status und das vereinbarte JSON-Format.
-3. Eine SQL-Abfrage filtert fachlich relevante Datensätze korrekt und berechnet ein reproduzierbares Aggregat.
+3. SQL-Abfragen werten fachlich relevante Datensätze korrekt aus und die Datenbank weist einen ungültigen negativen Betrag ab.
 
 ## Teststrategie
 
@@ -42,6 +42,7 @@ Positive und negative Szenarien werden gezielt kombiniert. Der negative Login- u
 | API | `QOL-API-POSTS-001` | Status 200, JSON-Content-Type, Datenstruktur und Identifikatoren |
 | API | `QOL-API-POSTS-002` | Status 404 und kontrollierter leerer JSON-Körper |
 | Daten | `QOL-DATA-ORDERS-001` | Filterung bezahlter Bestellungen sowie korrekte Anzahl und Gesamtsumme |
+| Daten | `QOL-DATA-ORDERS-002` | Abweisung einer negativen Bestellsumme ohne Speicherung |
 
 Voraussetzungen, Testdaten, Einzelschritte und erwartete Ergebnisse sind im [Testfallkatalog](test-cases.md) beschrieben. Jeder Testfall verweist dort auf seine Automatisierung.
 
@@ -54,6 +55,7 @@ Voraussetzungen, Testdaten, Einzelschritte und erwartete Ergebnisse sind im [Tes
 - Der Datentest erzeugt mit `node:sqlite` bei jeder Ausführung eine neue SQLite-Datenbank im Arbeitsspeicher.
 - Geldbeträge werden als ganze Centwerte gespeichert, um Rundungsfehler mit Fließkommazahlen zu vermeiden.
 - Die SQL-Abfrage nutzt einen Parameter für den Status, anstatt den Wert direkt in den Abfragetext einzusetzen.
+- Ein negativer Datentest belegt, dass die `CHECK`-Regel einen Betrag unter `0` Cent abweist und kein Datensatz zurückbleibt.
 - Die Datenbank wird nach dem Test geschlossen; es bleibt keine lokale Datenbankdatei zurück.
 
 ## Ausführung und Ergebnisnachweis
@@ -61,7 +63,7 @@ Voraussetzungen, Testdaten, Einzelschritte und erwartete Ergebnisse sind im [Tes
 Die vollständige Suite wurde am 12. August 2026 auf macOS mit Node.js 24.19.0 ausgeführt:
 
 ```text
-8 passed
+9 passed
 ```
 
 GitHub Actions führt dieselbe Suite in einer frischen Ubuntu-Umgebung mit Node.js 24 und Chromium aus. Der Workflow installiert die festgeschriebenen npm-Abhängigkeiten, startet alle Tests und speichert den HTML-Testbericht für 30 Tage als Artefakt. Dadurch ist das Ergebnis unabhängig von der lokalen Mac-Konfiguration überprüfbar.
@@ -96,4 +98,4 @@ Dieser Projektstand zeigt:
 
 ## Sinnvoller nächster Schritt
 
-Als nächster kleiner Block bietet sich eine zweite SQL-Datenprüfung für eine ungültige negative Bestellsumme an. Sie würde gezielt belegen, dass die bestehende Datenbankregel fehlerhafte Beträge abweist. Ein professioneller Bug Report entsteht weiterhin nur, wenn ein tatsächliches Problem reproduzierbar beobachtet und belegt wurde.
+Als nächster kleiner Block bietet sich eine professionelle Bug-Report-Vorlage an. Sie kann Felder für Reproduktionsschritte, erwartetes und tatsächliches Ergebnis, Umgebung, Priorität und Belege vorgeben, ohne einen nicht vorhandenen Produktfehler zu erfinden.

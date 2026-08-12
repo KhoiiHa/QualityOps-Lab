@@ -26,6 +26,7 @@ Dieser Katalog dokumentiert die aktuell automatisierten Testszenarien für die �
 | QOL-API-POSTS-001 | Posts API | positiv | hoch | [`tests/api/posts.spec.ts`](../tests/api/posts.spec.ts) |
 | QOL-API-POSTS-002 | Posts API | negativ | hoch | [`tests/api/posts.spec.ts`](../tests/api/posts.spec.ts) |
 | QOL-DATA-ORDERS-001 | Bestelldaten | positiv | hoch | [`tests/database/orders.spec.ts`](../tests/database/orders.spec.ts) |
+| QOL-DATA-ORDERS-002 | Bestelldaten | negativ | hoch | [`tests/database/orders.spec.ts`](../tests/database/orders.spec.ts) |
 
 ## QOL-WEB-LOGIN-001 – Erfolgreiche Anmeldung
 
@@ -305,8 +306,40 @@ Dieser Katalog dokumentiert die aktuell automatisierten Testszenarien für die �
 | 4 | Das Abfrageergebnis prüfen. | Die Anzahl ist `3` und die Gesamtsumme beträgt `7000` Cent. |
 | 5 | Die Datenbank schließen. | Die temporären Testdaten werden vollständig verworfen. |
 
+## QOL-DATA-ORDERS-002 – Negative Bestellsumme abweisen
+
+| Feld | Inhalt |
+| --- | --- |
+| Ziel | Prüfen, dass die Datenbank eine Bestellung mit einer negativen Gesamtsumme ablehnt und keinen ungültigen Datensatz speichert. |
+| Priorität | hoch |
+| Testtyp | negativ |
+| Automatisierungsstatus | automatisiert |
+
+### Voraussetzungen
+
+- Node.js 24 mit dem integrierten Modul `node:sqlite` ist verfügbar.
+- Der Test erzeugt eine neue, leere SQLite-Datenbank im Arbeitsspeicher.
+- Die Spalte `total_cents` besitzt die Regel `CHECK (total_cents >= 0)`.
+
+### Testdaten
+
+| Eingabe | Wert |
+| --- | --- |
+| Bestell-ID | `1` |
+| Status | `PAID` |
+| Betrag in Cent | `-1` |
+
+### Testschritte
+
+| Nr. | Aktion | Erwartetes Ergebnis |
+| --- | --- | --- |
+| 1 | Eine leere In-Memory-Datenbank und die Tabelle `orders` mit der Betragsregel erzeugen. | Die Tabelle ist verfügbar und erlaubt nur Beträge ab `0` Cent. |
+| 2 | Eine bezahlte Bestellung mit `-1` Cent einfügen. | SQLite lehnt den Schreibvorgang wegen der verletzten `CHECK`-Regel ab. |
+| 3 | Die Anzahl der gespeicherten Bestellungen abfragen. | Die Anzahl ist `0`; der ungültige Datensatz wurde nicht gespeichert. |
+| 4 | Die Datenbank schließen. | Die temporäre Datenbank wird vollständig verworfen. |
+
 ## Bekannte Grenzen
 
 - Die Ergebnisse hängen von der Erreichbarkeit und dem aktuellen Zustand der externen Testsysteme ab.
 - Die Webtests decken derzeit nur Chromium ab.
-- Weitere Checkout-Pflichtfelder und Varianten, API-Methoden, persistente Datenbanken, komplexere SQL-Abfragen und mobile Tests sind noch nicht Bestandteil dieses Katalogs.
+- Weitere Checkout-Pflichtfelder und Varianten, API-Methoden, persistente Datenbanken, Tabellenbeziehungen und mobile Tests sind noch nicht Bestandteil dieses Katalogs.

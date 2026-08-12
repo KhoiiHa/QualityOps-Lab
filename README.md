@@ -8,7 +8,7 @@ QualityOps Lab ist ein praxisnahes QA-Engineering-Portfolio. Das Projekt zeigt s
 
 - fünf automatisierte Web-End-to-End-Tests mit Playwright und TypeScript
 - zwei API-Tests mit positiver und negativer Abdeckung ohne zusätzlichen Browser
-- eine reproduzierbare SQL-Datenprüfung mit einer temporären In-Memory-Datenbank
+- zwei reproduzierbare SQL-Datenprüfungen mit positiver und negativer Abdeckung in einer temporären In-Memory-Datenbank
 - positive und negative Login-Abdeckung
 - zusammenhängender Warenkorb- und Checkout-Ablauf
 - strukturierter Testfallkatalog mit Rückverweisen auf die Automatisierung
@@ -30,6 +30,7 @@ Als öffentliche Testobjekte dienen die für Browser-Tests vorgesehene Demoanwen
 | API – Beitrag | positiv | `GET /posts/1` liefert Status 200, JSON und die erwartete Datenstruktur. |
 | API – Beitrag | negativ | `GET /posts/999999` liefert Status 404 und ein kontrolliertes leeres JSON-Objekt. |
 | Datenbank – Bestellungen | positiv | Eine SQL-Abfrage berücksichtigt nur bezahlte Bestellungen und berechnet deren Anzahl und Gesamtsumme korrekt. |
+| Datenbank – Bestellungen | negativ | Eine Datenbankregel weist eine negative Bestellsumme ab und verhindert das Speichern des ungültigen Datensatzes. |
 
 Die vollständigen Voraussetzungen, Testdaten, Schritte und erwarteten Ergebnisse stehen im [Testfallkatalog](docs/test-cases.md).
 

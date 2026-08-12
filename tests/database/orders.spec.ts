@@ -40,3 +40,29 @@ test('bezahlte Bestellungen werden korrekt aggregiert', () => {
     database.close();
   }
 });
+
+test('negative Bestellsumme wird von der Datenbank abgewiesen', () => {
+  const database = new DatabaseSync(':memory:');
+
+  try {
+    database.exec(`
+      CREATE TABLE orders (
+        id INTEGER PRIMARY KEY,
+        status TEXT NOT NULL,
+        total_cents INTEGER NOT NULL CHECK (total_cents >= 0)
+      ) STRICT;
+    `);
+
+    const insertOrder = database.prepare(
+      'INSERT INTO orders (id, status, total_cents) VALUES (?, ?, ?)',
+    );
+
+    expect(() => insertOrder.run(1, 'PAID', -1)).toThrow(/CHECK constraint failed/);
+
+    const result = database.prepare('SELECT COUNT(*) AS order_count FROM orders').get();
+
+    expect(result).toEqual({ order_count: 0 });
+  } finally {
+    database.close();
+  }
+});
