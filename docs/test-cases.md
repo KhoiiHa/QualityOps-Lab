@@ -21,6 +21,7 @@ Dieser Katalog dokumentiert die aktuell automatisierten Testszenarien für die �
 | QOL-WEB-LOGIN-001 | Login | positiv | hoch | [`tests/login.spec.ts`](../tests/login.spec.ts) |
 | QOL-WEB-LOGIN-002 | Login | negativ | hoch | [`tests/login.spec.ts`](../tests/login.spec.ts) |
 | QOL-WEB-CART-001 | Warenkorb | positiv | hoch | [`tests/cart.spec.ts`](../tests/cart.spec.ts) |
+| QOL-WEB-CHECKOUT-001 | Checkout | positiv | hoch | [`tests/checkout.spec.ts`](../tests/checkout.spec.ts) |
 | QOL-API-POSTS-001 | Posts API | positiv | hoch | [`tests/api/posts.spec.ts`](../tests/api/posts.spec.ts) |
 | QOL-API-POSTS-002 | Posts API | negativ | hoch | [`tests/api/posts.spec.ts`](../tests/api/posts.spec.ts) |
 | QOL-DATA-ORDERS-001 | Bestelldaten | positiv | hoch | [`tests/database/orders.spec.ts`](../tests/database/orders.spec.ts) |
@@ -124,6 +125,47 @@ Dieser Katalog dokumentiert die aktuell automatisierten Testszenarien für die �
 | 4 | Den Warenkorb öffnen. | Die Warenkorbseite wird geöffnet; die URL endet auf `cart.html`. |
 | 5 | Die Anzahl der Warenkorbeinträge prüfen. | Genau ein Eintrag ist vorhanden. |
 | 6 | Den Produktnamen im Warenkorb prüfen. | „Sauce Labs Backpack“ ist sichtbar. |
+
+## QOL-WEB-CHECKOUT-001 – Bestellung erfolgreich abschließen
+
+| Feld | Inhalt |
+| --- | --- |
+| Ziel | Prüfen, dass ein angemeldeter Benutzer ein Produkt mit gültigen Kundendaten und korrekter Preisübersicht erfolgreich bestellen kann. |
+| Priorität | hoch |
+| Testtyp | positiv |
+| Automatisierungsstatus | automatisiert |
+
+### Voraussetzungen
+
+- SauceDemo ist erreichbar.
+- Der Benutzer ist nicht angemeldet und befindet sich auf der Login-Seite.
+- Das Produkt „Sauce Labs Backpack“ ist für `$29.99` verfügbar.
+- Der Checkout-Ablauf wurde zuvor in der explorativen Sitzung [`QOL-EXP-CHECKOUT-001`](exploratory-session-checkout.md) geprüft.
+
+### Testdaten
+
+| Eingabe | Wert |
+| --- | --- |
+| Benutzername | `standard_user` |
+| Passwort | `secret_sauce` |
+| Produkt | `Sauce Labs Backpack` |
+| Vorname | `Max` |
+| Nachname | `Mustermann` |
+| Postleitzahl | `20095` |
+| Erwartete Zwischensumme | `$29.99` |
+| Erwartete Steuer | `$2.40` |
+| Erwartete Gesamtsumme | `$32.39` |
+
+### Testschritte
+
+| Nr. | Aktion | Erwartetes Ergebnis |
+| --- | --- | --- |
+| 1 | Mit den gültigen Demo-Zugangsdaten anmelden. | Die Produktübersicht wird geöffnet. |
+| 2 | Den „Sauce Labs Backpack“ zum Warenkorb hinzufügen und den Warenkorb öffnen. | Der Warenkorb enthält das ausgewählte Produkt. |
+| 3 | Den Checkout starten. | Das Formular für die Kundendaten unter `checkout-step-one.html` wird geöffnet. |
+| 4 | Vorname, Nachname und Postleitzahl eingeben und fortfahren. | Die Bestellübersicht unter `checkout-step-two.html` wird geöffnet. |
+| 5 | Produkt und Preisübersicht prüfen. | Der Rucksack ist sichtbar; Zwischensumme, Steuer und Gesamtsumme entsprechen den erwarteten Werten. |
+| 6 | Die Bestellung abschließen. | Die Abschlussseite `checkout-complete.html` zeigt „Thank you for your order!“. |
 
 ## QOL-API-POSTS-001 – Einzelnen Beitrag abrufen
 
@@ -230,4 +272,4 @@ Dieser Katalog dokumentiert die aktuell automatisierten Testszenarien für die �
 
 - Die Ergebnisse hängen von der Erreichbarkeit und dem aktuellen Zustand der externen Testsysteme ab.
 - Die Webtests decken derzeit nur Chromium ab.
-- Checkout, weitere API-Methoden, persistente Datenbanken, komplexere SQL-Abfragen und mobile Tests sind noch nicht Bestandteil dieses Katalogs.
+- Weitere Checkout-Varianten, API-Methoden, persistente Datenbanken, komplexere SQL-Abfragen und mobile Tests sind noch nicht Bestandteil dieses Katalogs.
