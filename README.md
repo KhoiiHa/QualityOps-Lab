@@ -6,7 +6,7 @@ QualityOps Lab ist ein praxisnahes QA-Engineering-Portfolio. Das Projekt zeigt s
 
 ## Aktueller Stand
 
-- vier automatisierte Web-End-to-End-Tests mit Playwright und TypeScript
+- fünf automatisierte Web-End-to-End-Tests mit Playwright und TypeScript
 - zwei API-Tests mit positiver und negativer Abdeckung ohne zusätzlichen Browser
 - eine reproduzierbare SQL-Datenprüfung mit einer temporären In-Memory-Datenbank
 - positive und negative Login-Abdeckung
@@ -26,6 +26,7 @@ Als öffentliche Testobjekte dienen die für Browser-Tests vorgesehene Demoanwen
 | Login | negativ | Ein falsches Passwort zeigt eine Fehlermeldung und verhindert die Weiterleitung. |
 | Warenkorb | positiv | Ein ausgewähltes Produkt erhöht den Zähler und erscheint als einziger Warenkorbeintrag. |
 | Checkout | positiv | Ein Produkt kann mit gültigen Kundendaten, korrekter Preisübersicht und Bestellbestätigung bestellt werden. |
+| Checkout | negativ | Ein fehlender Vorname verhindert das Fortsetzen und zeigt eine verständliche Fehlermeldung. |
 | API – Beitrag | positiv | `GET /posts/1` liefert Status 200, JSON und die erwartete Datenstruktur. |
 | API – Beitrag | negativ | `GET /posts/999999` liefert Status 404 und ein kontrolliertes leeres JSON-Objekt. |
 | Datenbank – Bestellungen | positiv | Eine SQL-Abfrage berücksichtigt nur bezahlte Bestellungen und berechnet deren Anzahl und Gesamtsumme korrekt. |
@@ -97,7 +98,7 @@ QualityOps-Lab/
 
 - Die Browser-Tests laufen derzeit ausschließlich mit Chromium.
 - Die Tests sind von der Erreichbarkeit und Stabilität der externen Testsysteme abhängig.
-- Der Checkout-Test deckt nur einen positiven Ablauf mit einem Benutzer und einem Produkt ab.
+- Die Checkout-Tests decken einen positiven Ablauf und die Validierung eines fehlenden Vornamens mit einem Benutzer und einem Produkt ab.
 - Persistente Datenbanken, komplexere SQL-Abfragen und Mobile-QA-Szenarien sind noch nicht umgesetzt.
 - Die Tests verwenden bewusst öffentliche Demo-Zugangsdaten und keine produktiven Konten.
 

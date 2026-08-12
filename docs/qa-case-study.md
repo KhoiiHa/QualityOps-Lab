@@ -5,8 +5,8 @@
 QualityOps Lab ist ein eigenständiges QA-Engineering-Portfolio. Untersucht werden eine öffentliche Web-Demo, eine öffentliche Test-API und feste Bestelldaten in einer temporären SQLite-Datenbank. Ziel ist nicht eine möglichst hohe Testanzahl, sondern ein kleiner, nachvollziehbarer Nachweis für Testdesign, Automatisierung, Datenprüfung und kontinuierliche Testausführung.
 
 - **Stand:** 12. August 2026
-- **Automatisierungsstatus:** 7 von 7 dokumentierten Testfällen automatisiert
-- **Letzte lokale Verifikation:** 7 Tests erfolgreich
+- **Automatisierungsstatus:** 8 von 8 dokumentierten Testfällen automatisiert
+- **Letzte lokale Verifikation:** 8 Tests erfolgreich
 - **CI:** automatische Ausführung über [GitHub Actions](https://github.com/KhoiiHa/QualityOps-Lab/actions)
 
 ## Ausgangslage und Qualitätsziel
@@ -38,6 +38,7 @@ Positive und negative Szenarien werden gezielt kombiniert. Der negative Login- u
 | Web | `QOL-WEB-LOGIN-002` | Abweisung eines falschen Passworts mit verständlicher Fehlermeldung |
 | Web | `QOL-WEB-CART-001` | Produktwahl, Warenkorb-Zähler und korrekter Warenkorbeintrag |
 | Web | `QOL-WEB-CHECKOUT-001` | Kundendaten, Preisübersicht und erfolgreicher Bestellabschluss |
+| Web | `QOL-WEB-CHECKOUT-002` | Abweisung des Checkouts bei fehlendem Vornamen |
 | API | `QOL-API-POSTS-001` | Status 200, JSON-Content-Type, Datenstruktur und Identifikatoren |
 | API | `QOL-API-POSTS-002` | Status 404 und kontrollierter leerer JSON-Körper |
 | Daten | `QOL-DATA-ORDERS-001` | Filterung bezahlter Bestellungen sowie korrekte Anzahl und Gesamtsumme |
@@ -48,7 +49,7 @@ Voraussetzungen, Testdaten, Einzelschritte und erwartete Ergebnisse sind im [Tes
 
 - Playwright Test und TypeScript bilden einen gemeinsamen, bewusst einfachen Test-Runner.
 - Webtests laufen mit Chromium gegen [SauceDemo](https://www.saucedemo.com/).
-- Der Checkout-Test prüft Produkt, Zwischensumme, Steuer, Gesamtsumme und Bestellbestätigung im zusammenhängenden Ablauf.
+- Die Checkout-Tests prüfen den positiven Bestellabschluss und die gezielte Abweisung bei fehlendem Vornamen.
 - API-Tests verwenden Playwrights Request-Kontext ohne einen Browser zu starten und prüfen [JSONPlaceholder](https://jsonplaceholder.typicode.com/).
 - Der Datentest erzeugt mit `node:sqlite` bei jeder Ausführung eine neue SQLite-Datenbank im Arbeitsspeicher.
 - Geldbeträge werden als ganze Centwerte gespeichert, um Rundungsfehler mit Fließkommazahlen zu vermeiden.
@@ -60,7 +61,7 @@ Voraussetzungen, Testdaten, Einzelschritte und erwartete Ergebnisse sind im [Tes
 Die vollständige Suite wurde am 12. August 2026 auf macOS mit Node.js 24.19.0 ausgeführt:
 
 ```text
-7 passed
+8 passed
 ```
 
 GitHub Actions führt dieselbe Suite in einer frischen Ubuntu-Umgebung mit Node.js 24 und Chromium aus. Der Workflow installiert die festgeschriebenen npm-Abhängigkeiten, startet alle Tests und speichert den HTML-Testbericht für 30 Tage als Artefakt. Dadurch ist das Ergebnis unabhängig von der lokalen Mac-Konfiguration überprüfbar.
@@ -77,7 +78,7 @@ GitHub Actions führt dieselbe Suite in einer frischen Ubuntu-Umgebung mit Node.
 
 - Die Browser-Abdeckung ist aktuell auf Chromium beschränkt; Firefox, WebKit und reale Mobilgeräte sind nicht verifiziert.
 - SauceDemo und JSONPlaceholder sind externe Testsysteme. Ausfälle oder Änderungen können Tests beeinflussen, ohne dass sich dieses Repository geändert hat.
-- Der Checkout-Test verwendet nur `standard_user`, ein Produkt und gültige Kundendaten. Pflichtfeldvarianten, mehrere Produkte und Zurücknavigation sind nicht automatisiert.
+- Die Checkout-Tests verwenden nur `standard_user` und ein Produkt. Fehlender Nachname, fehlende Postleitzahl, mehrere Produkte und Zurücknavigation sind nicht automatisiert.
 - Die API-Abdeckung beschränkt sich auf lesende `GET`-Anfragen ohne Authentifizierung.
 - Die Datenprüfung verwendet eine einzelne Tabelle im Arbeitsspeicher. Persistente Datenbanken, Beziehungen, Joins und Migrationen sind nicht geprüft.
 - Der erfolgreiche CI-Lauf belegt die automatisierte Ausführung unter Ubuntu Linux, nicht das Verhalten auf allen Betriebssystemen oder Browsern.
@@ -95,4 +96,4 @@ Dieser Projektstand zeigt:
 
 ## Sinnvoller nächster Schritt
 
-Als nächster kleiner Block bietet sich ein negativer Checkout-Test für ein fehlendes Pflichtfeld an. Er sollte genau eine Validierungsregel automatisieren, damit der Umfang klein und die Ursache eines möglichen Fehlers eindeutig bleibt. Ein professioneller Bug Report entsteht weiterhin nur, wenn ein tatsächliches Problem reproduzierbar beobachtet und belegt wurde.
+Als nächster kleiner Block bietet sich eine zweite SQL-Datenprüfung für eine ungültige negative Bestellsumme an. Sie würde gezielt belegen, dass die bestehende Datenbankregel fehlerhafte Beträge abweist. Ein professioneller Bug Report entsteht weiterhin nur, wenn ein tatsächliches Problem reproduzierbar beobachtet und belegt wurde.

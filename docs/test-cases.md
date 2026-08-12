@@ -22,6 +22,7 @@ Dieser Katalog dokumentiert die aktuell automatisierten Testszenarien für die �
 | QOL-WEB-LOGIN-002 | Login | negativ | hoch | [`tests/login.spec.ts`](../tests/login.spec.ts) |
 | QOL-WEB-CART-001 | Warenkorb | positiv | hoch | [`tests/cart.spec.ts`](../tests/cart.spec.ts) |
 | QOL-WEB-CHECKOUT-001 | Checkout | positiv | hoch | [`tests/checkout.spec.ts`](../tests/checkout.spec.ts) |
+| QOL-WEB-CHECKOUT-002 | Checkout | negativ | hoch | [`tests/checkout.spec.ts`](../tests/checkout.spec.ts) |
 | QOL-API-POSTS-001 | Posts API | positiv | hoch | [`tests/api/posts.spec.ts`](../tests/api/posts.spec.ts) |
 | QOL-API-POSTS-002 | Posts API | negativ | hoch | [`tests/api/posts.spec.ts`](../tests/api/posts.spec.ts) |
 | QOL-DATA-ORDERS-001 | Bestelldaten | positiv | hoch | [`tests/database/orders.spec.ts`](../tests/database/orders.spec.ts) |
@@ -167,6 +168,42 @@ Dieser Katalog dokumentiert die aktuell automatisierten Testszenarien für die �
 | 5 | Produkt und Preisübersicht prüfen. | Der Rucksack ist sichtbar; Zwischensumme, Steuer und Gesamtsumme entsprechen den erwarteten Werten. |
 | 6 | Die Bestellung abschließen. | Die Abschlussseite `checkout-complete.html` zeigt „Thank you for your order!“. |
 
+## QOL-WEB-CHECKOUT-002 – Checkout ohne Vornamen abweisen
+
+| Feld | Inhalt |
+| --- | --- |
+| Ziel | Prüfen, dass ein fehlender Vorname das Fortsetzen zur Bestellübersicht verhindert und eine verständliche Fehlermeldung auslöst. |
+| Priorität | hoch |
+| Testtyp | negativ |
+| Automatisierungsstatus | automatisiert |
+
+### Voraussetzungen
+
+- SauceDemo ist erreichbar.
+- Der Benutzer ist nicht angemeldet und befindet sich auf der Login-Seite.
+- Das Produkt „Sauce Labs Backpack“ ist verfügbar.
+
+### Testdaten
+
+| Eingabe | Wert |
+| --- | --- |
+| Benutzername | `standard_user` |
+| Passwort | `secret_sauce` |
+| Produkt | `Sauce Labs Backpack` |
+| Vorname | leer |
+| Nachname | `Mustermann` |
+| Postleitzahl | `20095` |
+
+### Testschritte
+
+| Nr. | Aktion | Erwartetes Ergebnis |
+| --- | --- | --- |
+| 1 | Mit den gültigen Demo-Zugangsdaten anmelden. | Die Produktübersicht wird geöffnet. |
+| 2 | Den „Sauce Labs Backpack“ zum Warenkorb hinzufügen, den Warenkorb öffnen und den Checkout starten. | Das Formular unter `checkout-step-one.html` wird geöffnet. |
+| 3 | Nachname und Postleitzahl eingeben, den Vornamen aber leer lassen. | Die beiden eingegebenen Werte stehen in den vorgesehenen Feldern; das Vornamensfeld bleibt leer. |
+| 4 | Die Schaltfläche „Continue“ betätigen. | Die Bestellübersicht wird nicht geöffnet; die URL bleibt auf `checkout-step-one.html`. |
+| 5 | Die Validierungsmeldung prüfen. | `Error: First Name is required` wird angezeigt. |
+
 ## QOL-API-POSTS-001 – Einzelnen Beitrag abrufen
 
 | Feld | Inhalt |
@@ -272,4 +309,4 @@ Dieser Katalog dokumentiert die aktuell automatisierten Testszenarien für die �
 
 - Die Ergebnisse hängen von der Erreichbarkeit und dem aktuellen Zustand der externen Testsysteme ab.
 - Die Webtests decken derzeit nur Chromium ab.
-- Weitere Checkout-Varianten, API-Methoden, persistente Datenbanken, komplexere SQL-Abfragen und mobile Tests sind noch nicht Bestandteil dieses Katalogs.
+- Weitere Checkout-Pflichtfelder und Varianten, API-Methoden, persistente Datenbanken, komplexere SQL-Abfragen und mobile Tests sind noch nicht Bestandteil dieses Katalogs.
