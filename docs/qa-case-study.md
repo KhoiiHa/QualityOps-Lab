@@ -74,6 +74,7 @@ GitHub Actions führt dieselbe Suite in einer frischen Ubuntu-Umgebung mit Node.
 - Der positive Checkout-Test wurde aus der dokumentierten explorativen Sitzung [`QOL-EXP-CHECKOUT-001`](exploratory-session-checkout.md) abgeleitet.
 - Feste API-Ressourcen und feste SQL-Testdaten machen die erwarteten Ergebnisse verständlich und wiederholbar.
 - Die In-Memory-Datenbank isoliert den Datentest von bestehenden Daten und verhindert bleibende Änderungen.
+- Die [Bug-Report-Vorlage](bug-report-template.md) definiert eine einheitliche Struktur für reproduzierbare Fehler, Belege, Schweregrad, Priorität und Nachtest.
 - Die Tests enthalten derzeit keine erfundenen Bug Reports. Ein professioneller Fehlerbericht wird erst ergänzt, wenn ein tatsächliches Problem reproduzierbar beobachtet und mit Belegen dokumentiert wurde.
 
 ## Grenzen und Restrisiken
@@ -94,8 +95,9 @@ Dieser Projektstand zeigt:
 - Weboberflächen, HTTP-Antworten und SQL-Ergebnisse prüfen
 - Testfälle und automatisierte Tests rückverfolgbar verbinden
 - Tests lokal und in Continuous Integration reproduzierbar ausführen
+- professionelle Fehlerdokumentation strukturiert und datenschutzbewusst vorbereiten
 - Ergebnisse, Abhängigkeiten und nicht geprüfte Bereiche transparent dokumentieren
 
 ## Sinnvoller nächster Schritt
 
-Als nächster kleiner Block bietet sich eine professionelle Bug-Report-Vorlage an. Sie kann Felder für Reproduktionsschritte, erwartetes und tatsächliches Ergebnis, Umgebung, Priorität und Belege vorgeben, ohne einen nicht vorhandenen Produktfehler zu erfinden.
+Als nächster kleiner Block bietet sich eine rein lesende Portfolio-Abschlussprüfung an. Dabei sollten Repository-Struktur, öffentliche Links, Dokumentationskonsistenz, Testnachweise und verbleibende Lücken bewertet werden, bevor weitere Funktionen ergänzt werden.

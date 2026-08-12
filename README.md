@@ -34,6 +34,8 @@ Als öffentliche Testobjekte dienen die für Browser-Tests vorgesehene Demoanwen
 
 Die vollständigen Voraussetzungen, Testdaten, Schritte und erwarteten Ergebnisse stehen im [Testfallkatalog](docs/test-cases.md).
 
+Weitere QA-Artefakte sind die [QA-Fallstudie](docs/qa-case-study.md), das [explorative Checkout-Protokoll](docs/exploratory-session-checkout.md) und eine [professionelle Bug-Report-Vorlage](docs/bug-report-template.md). Die Vorlage ist noch kein gemeldeter Produktfehler; ein konkreter Bericht wird erst bei einer belegbaren Beobachtung erstellt.
+
 ## Technik
 
 - Node.js 24 LTS
@@ -81,6 +83,7 @@ GitHub richtet dafür eine frische Linux-Umgebung mit Node.js 24 und Chromium ei
 QualityOps-Lab/
 ├── .github/workflows/playwright.yml  # Automatische CI-Testausführung
 ├── docs/
+│   ├── bug-report-template.md          # Wiederverwendbare Fehlervorlage
 │   ├── exploratory-session-checkout.md # Exploratives Checkout-Protokoll
 │   ├── qa-case-study.md                # Kompakte QA-Fallstudie
 │   └── test-cases.md                   # Strukturierter Testfallkatalog
@@ -108,5 +111,5 @@ QualityOps-Lab/
 - weitere fachliche Web-Testfälle
 - weitere API-Endpunkte und HTTP-Methoden
 - weitere SQL- und Datenprüfungen, zum Beispiel mit Tabellenbeziehungen
-- professionelle Bug Reports, sobald ein tatsächlicher Fehler reproduzierbar gefunden wurde
+- erster konkreter Bug Report mit der vorhandenen Vorlage, sobald ein tatsächlicher Fehler reproduzierbar gefunden wurde
 - optional eine separate Mobile-QA-Fallstudie
