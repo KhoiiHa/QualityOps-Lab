@@ -6,11 +6,11 @@ QualityOps Lab ist ein praxisnahes QA-Engineering-Portfolio. Das Projekt zeigt s
 
 ## Aktueller Stand
 
-- drei automatisierte Web-End-to-End-Tests mit Playwright und TypeScript
+- vier automatisierte Web-End-to-End-Tests mit Playwright und TypeScript
 - zwei API-Tests mit positiver und negativer Abdeckung ohne zusätzlichen Browser
 - eine reproduzierbare SQL-Datenprüfung mit einer temporären In-Memory-Datenbank
 - positive und negative Login-Abdeckung
-- zusammenhängender Warenkorb-Ablauf
+- zusammenhängender Warenkorb- und Checkout-Ablauf
 - strukturierter Testfallkatalog mit Rückverweisen auf die Automatisierung
 - lokale Ausführung mit Chromium
 - automatische Ausführung bei Pushes und Pull Requests über GitHub Actions
@@ -25,6 +25,7 @@ Als öffentliche Testobjekte dienen die für Browser-Tests vorgesehene Demoanwen
 | Login | positiv | Ein gültiger Benutzer erreicht die Produktübersicht. |
 | Login | negativ | Ein falsches Passwort zeigt eine Fehlermeldung und verhindert die Weiterleitung. |
 | Warenkorb | positiv | Ein ausgewähltes Produkt erhöht den Zähler und erscheint als einziger Warenkorbeintrag. |
+| Checkout | positiv | Ein Produkt kann mit gültigen Kundendaten, korrekter Preisübersicht und Bestellbestätigung bestellt werden. |
 | API – Beitrag | positiv | `GET /posts/1` liefert Status 200, JSON und die erwartete Datenstruktur. |
 | API – Beitrag | negativ | `GET /posts/999999` liefert Status 404 und ein kontrolliertes leeres JSON-Objekt. |
 | Datenbank – Bestellungen | positiv | Eine SQL-Abfrage berücksichtigt nur bezahlte Bestellungen und berechnet deren Anzahl und Gesamtsumme korrekt. |
@@ -77,11 +78,15 @@ GitHub richtet dafür eine frische Linux-Umgebung mit Node.js 24 und Chromium ei
 ```text
 QualityOps-Lab/
 ├── .github/workflows/playwright.yml  # Automatische CI-Testausführung
-├── docs/test-cases.md                 # Strukturierter Testfallkatalog
+├── docs/
+│   ├── exploratory-session-checkout.md # Exploratives Checkout-Protokoll
+│   ├── qa-case-study.md                # Kompakte QA-Fallstudie
+│   └── test-cases.md                   # Strukturierter Testfallkatalog
 ├── tests/
 │   ├── api/posts.spec.ts              # Positive und negative GET-API-Tests
 │   ├── database/orders.spec.ts        # SQL-Prüfung von Bestelldaten
 │   ├── cart.spec.ts                   # Warenkorb-Ablauf
+│   ├── checkout.spec.ts               # Positiver Bestellabschluss
 │   └── login.spec.ts                  # Positive und negative Login-Tests
 ├── playwright.config.ts              # Gemeinsame Playwright-Einstellungen
 ├── package.json                      # Abhängigkeiten und npm-Skripte
@@ -92,6 +97,7 @@ QualityOps-Lab/
 
 - Die Browser-Tests laufen derzeit ausschließlich mit Chromium.
 - Die Tests sind von der Erreichbarkeit und Stabilität der externen Testsysteme abhängig.
+- Der Checkout-Test deckt nur einen positiven Ablauf mit einem Benutzer und einem Produkt ab.
 - Persistente Datenbanken, komplexere SQL-Abfragen und Mobile-QA-Szenarien sind noch nicht umgesetzt.
 - Die Tests verwenden bewusst öffentliche Demo-Zugangsdaten und keine produktiven Konten.
 
@@ -100,5 +106,5 @@ QualityOps-Lab/
 - weitere fachliche Web-Testfälle
 - weitere API-Endpunkte und HTTP-Methoden
 - weitere SQL- und Datenprüfungen, zum Beispiel mit Tabellenbeziehungen
-- professionelle Bug Reports und eine kurze QA-Fallstudie
+- professionelle Bug Reports, sobald ein tatsächlicher Fehler reproduzierbar gefunden wurde
 - optional eine separate Mobile-QA-Fallstudie

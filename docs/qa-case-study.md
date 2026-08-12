@@ -5,8 +5,8 @@
 QualityOps Lab ist ein eigenständiges QA-Engineering-Portfolio. Untersucht werden eine öffentliche Web-Demo, eine öffentliche Test-API und feste Bestelldaten in einer temporären SQLite-Datenbank. Ziel ist nicht eine möglichst hohe Testanzahl, sondern ein kleiner, nachvollziehbarer Nachweis für Testdesign, Automatisierung, Datenprüfung und kontinuierliche Testausführung.
 
 - **Stand:** 12. August 2026
-- **Automatisierungsstatus:** 6 von 6 dokumentierten Testfällen automatisiert
-- **Letzte lokale Verifikation:** 6 Tests erfolgreich
+- **Automatisierungsstatus:** 7 von 7 dokumentierten Testfällen automatisiert
+- **Letzte lokale Verifikation:** 7 Tests erfolgreich
 - **CI:** automatische Ausführung über [GitHub Actions](https://github.com/KhoiiHa/QualityOps-Lab/actions)
 
 ## Ausgangslage und Qualitätsziel
@@ -23,7 +23,7 @@ Der erste Projektumfang konzentriert sich deshalb auf drei überprüfbare Qualit
 
 Die Auswahl folgt einem risikoorientierten MVP-Ansatz:
 
-- **Web:** Anmeldung ist die Voraussetzung für geschützte Funktionen; der Warenkorb ist ein zentraler Geschäftsablauf.
+- **Web:** Anmeldung ist die Voraussetzung für geschützte Funktionen; Warenkorb und Bestellabschluss bilden einen zentralen Geschäftsablauf.
 - **API:** Sowohl ein erfolgreicher Abruf als auch eine nicht vorhandene Ressource werden geprüft, damit Erfolgs- und Fehlerverhalten sichtbar sind.
 - **Daten:** Eine Statusfilterung mit Aggregation prüft, ob stornierte Bestellungen von einer fachlichen Auswertung ausgeschlossen werden.
 - **Regression:** Alle Tests laufen gemeinsam lokal und bei jedem Push beziehungsweise Pull Request gegen `main`.
@@ -37,6 +37,7 @@ Positive und negative Szenarien werden gezielt kombiniert. Der negative Login- u
 | Web | `QOL-WEB-LOGIN-001` | Erfolgreiche Anmeldung und Weiterleitung zur Produktübersicht |
 | Web | `QOL-WEB-LOGIN-002` | Abweisung eines falschen Passworts mit verständlicher Fehlermeldung |
 | Web | `QOL-WEB-CART-001` | Produktwahl, Warenkorb-Zähler und korrekter Warenkorbeintrag |
+| Web | `QOL-WEB-CHECKOUT-001` | Kundendaten, Preisübersicht und erfolgreicher Bestellabschluss |
 | API | `QOL-API-POSTS-001` | Status 200, JSON-Content-Type, Datenstruktur und Identifikatoren |
 | API | `QOL-API-POSTS-002` | Status 404 und kontrollierter leerer JSON-Körper |
 | Daten | `QOL-DATA-ORDERS-001` | Filterung bezahlter Bestellungen sowie korrekte Anzahl und Gesamtsumme |
@@ -47,6 +48,7 @@ Voraussetzungen, Testdaten, Einzelschritte und erwartete Ergebnisse sind im [Tes
 
 - Playwright Test und TypeScript bilden einen gemeinsamen, bewusst einfachen Test-Runner.
 - Webtests laufen mit Chromium gegen [SauceDemo](https://www.saucedemo.com/).
+- Der Checkout-Test prüft Produkt, Zwischensumme, Steuer, Gesamtsumme und Bestellbestätigung im zusammenhängenden Ablauf.
 - API-Tests verwenden Playwrights Request-Kontext ohne einen Browser zu starten und prüfen [JSONPlaceholder](https://jsonplaceholder.typicode.com/).
 - Der Datentest erzeugt mit `node:sqlite` bei jeder Ausführung eine neue SQLite-Datenbank im Arbeitsspeicher.
 - Geldbeträge werden als ganze Centwerte gespeichert, um Rundungsfehler mit Fließkommazahlen zu vermeiden.
@@ -58,7 +60,7 @@ Voraussetzungen, Testdaten, Einzelschritte und erwartete Ergebnisse sind im [Tes
 Die vollständige Suite wurde am 12. August 2026 auf macOS mit Node.js 24.19.0 ausgeführt:
 
 ```text
-6 passed
+7 passed
 ```
 
 GitHub Actions führt dieselbe Suite in einer frischen Ubuntu-Umgebung mit Node.js 24 und Chromium aus. Der Workflow installiert die festgeschriebenen npm-Abhängigkeiten, startet alle Tests und speichert den HTML-Testbericht für 30 Tage als Artefakt. Dadurch ist das Ergebnis unabhängig von der lokalen Mac-Konfiguration überprüfbar.
@@ -66,6 +68,7 @@ GitHub Actions führt dieselbe Suite in einer frischen Ubuntu-Umgebung mit Node.
 ## Beobachtungen und Entscheidungen
 
 - Die direkte Adresse `https://www.saucedemo.com/` wird als Testziel verwendet, weil nur dort die erwartete Login-Oberfläche zuverlässig verfügbar ist.
+- Der positive Checkout-Test wurde aus der dokumentierten explorativen Sitzung [`QOL-EXP-CHECKOUT-001`](exploratory-session-checkout.md) abgeleitet.
 - Feste API-Ressourcen und feste SQL-Testdaten machen die erwarteten Ergebnisse verständlich und wiederholbar.
 - Die In-Memory-Datenbank isoliert den Datentest von bestehenden Daten und verhindert bleibende Änderungen.
 - Die Tests enthalten derzeit keine erfundenen Bug Reports. Ein professioneller Fehlerbericht wird erst ergänzt, wenn ein tatsächliches Problem reproduzierbar beobachtet und mit Belegen dokumentiert wurde.
@@ -74,7 +77,7 @@ GitHub Actions führt dieselbe Suite in einer frischen Ubuntu-Umgebung mit Node.
 
 - Die Browser-Abdeckung ist aktuell auf Chromium beschränkt; Firefox, WebKit und reale Mobilgeräte sind nicht verifiziert.
 - SauceDemo und JSONPlaceholder sind externe Testsysteme. Ausfälle oder Änderungen können Tests beeinflussen, ohne dass sich dieses Repository geändert hat.
-- Der Warenkorb-Test endet vor dem Checkout; Zahlung und Bestellabschluss sind nicht abgedeckt.
+- Der Checkout-Test verwendet nur `standard_user`, ein Produkt und gültige Kundendaten. Pflichtfeldvarianten, mehrere Produkte und Zurücknavigation sind nicht automatisiert.
 - Die API-Abdeckung beschränkt sich auf lesende `GET`-Anfragen ohne Authentifizierung.
 - Die Datenprüfung verwendet eine einzelne Tabelle im Arbeitsspeicher. Persistente Datenbanken, Beziehungen, Joins und Migrationen sind nicht geprüft.
 - Der erfolgreiche CI-Lauf belegt die automatisierte Ausführung unter Ubuntu Linux, nicht das Verhalten auf allen Betriebssystemen oder Browsern.
@@ -92,4 +95,4 @@ Dieser Projektstand zeigt:
 
 ## Sinnvoller nächster Schritt
 
-Als nächster kleiner Block folgt eine strukturierte explorative Prüfung eines klar abgegrenzten SauceDemo-Ablaufs. Nur wenn dabei ein echter, reproduzierbarer Fehler gefunden wird, entsteht daraus ein professioneller Bug Report mit Schritten, erwartetem und tatsächlichem Ergebnis, Umgebung, Priorität und Beleg.
+Als nächster kleiner Block bietet sich ein negativer Checkout-Test für ein fehlendes Pflichtfeld an. Er sollte genau eine Validierungsregel automatisieren, damit der Umfang klein und die Ursache eines möglichen Fehlers eindeutig bleibt. Ein professioneller Bug Report entsteht weiterhin nur, wenn ein tatsächliches Problem reproduzierbar beobachtet und belegt wurde.
