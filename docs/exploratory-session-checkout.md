@@ -71,6 +71,6 @@ Die negativen Pflichtfeldprüfungen zeigen erwartetes Validierungsverhalten. Sie
 - SauceDemo ist ein externes Demo-System; spätere Änderungen können zu anderen Beobachtungen führen.
 - Die Ausführung erfolgte automatisiert ohne sichtbares Browserfenster. Das belegt den funktionalen Ablauf, ersetzt aber keine manuelle visuelle Prüfung.
 
-## Empfohlener nächster Block
+## Umgesetzte Folgearbeit
 
-Der erfolgreiche Kernablauf eignet sich als neuer automatisierter Regressionstest `QOL-WEB-CHECKOUT-001`. Der nächste kleine Block sollte genau diesen positiven Checkout-Test implementieren und im Testfallkatalog ergänzen. Eine Erweiterung um weitere Benutzer, Produkte oder Browser erfolgt erst danach und jeweils separat.
+Der erfolgreiche Kernablauf wurde anschließend als positiver Regressionstest `QOL-WEB-CHECKOUT-001` in [`tests/checkout.spec.ts`](../tests/checkout.spec.ts) automatisiert und im [Testfallkatalog](test-cases.md) dokumentiert. Zusätzlich prüft `QOL-WEB-CHECKOUT-002`, dass ein fehlender Vorname das Fortsetzen im Checkout verhindert. Weitere Benutzer, Produkte und Browser bleiben bewusst außerhalb dieser Sitzung und sind als Grenzen dokumentiert.

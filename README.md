@@ -91,7 +91,7 @@ QualityOps-Lab/
 │   ├── api/posts.spec.ts              # Positive und negative GET-API-Tests
 │   ├── database/orders.spec.ts        # SQL-Prüfung von Bestelldaten
 │   ├── cart.spec.ts                   # Warenkorb-Ablauf
-│   ├── checkout.spec.ts               # Positiver Bestellabschluss
+│   ├── checkout.spec.ts               # Positive und negative Checkout-Tests
 │   └── login.spec.ts                  # Positive und negative Login-Tests
 ├── playwright.config.ts              # Gemeinsame Playwright-Einstellungen
 ├── package.json                      # Abhängigkeiten und npm-Skripte

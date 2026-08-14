@@ -4,7 +4,7 @@
 
 QualityOps Lab ist ein eigenständiges QA-Engineering-Portfolio. Untersucht werden eine öffentliche Web-Demo, eine öffentliche Test-API und feste Bestelldaten in einer temporären SQLite-Datenbank. Ziel ist nicht eine möglichst hohe Testanzahl, sondern ein kleiner, nachvollziehbarer Nachweis für Testdesign, Automatisierung, Datenprüfung und kontinuierliche Testausführung.
 
-- **Stand:** 12. August 2026
+- **Stand:** 14. August 2026
 - **Automatisierungsstatus:** 9 von 9 dokumentierten Testfällen automatisiert
 - **Letzte lokale Verifikation:** 9 Tests erfolgreich
 - **CI:** automatische Ausführung über [GitHub Actions](https://github.com/KhoiiHa/QualityOps-Lab/actions)
@@ -60,7 +60,7 @@ Voraussetzungen, Testdaten, Einzelschritte und erwartete Ergebnisse sind im [Tes
 
 ## Ausführung und Ergebnisnachweis
 
-Die vollständige Suite wurde am 12. August 2026 auf macOS mit Node.js 24.19.0 ausgeführt:
+Die vollständige Suite wurde am 14. August 2026 auf macOS mit Node.js 24.19.0 ausgeführt:
 
 ```text
 9 passed
@@ -98,6 +98,8 @@ Dieser Projektstand zeigt:
 - professionelle Fehlerdokumentation strukturiert und datenschutzbewusst vorbereiten
 - Ergebnisse, Abhängigkeiten und nicht geprüfte Bereiche transparent dokumentieren
 
-## Sinnvoller nächster Schritt
+## Portfolio-MVP-Status
 
-Als nächster kleiner Block bietet sich eine rein lesende Portfolio-Abschlussprüfung an. Dabei sollten Repository-Struktur, öffentliche Links, Dokumentationskonsistenz, Testnachweise und verbleibende Lücken bewertet werden, bevor weitere Funktionen ergänzt werden.
+Die rein lesende Portfolio-Abschlussprüfung bestätigte einen sauberen und synchronen Git-Stand, neun rückverfolgbare Testfälle, funktionierende Dokumentverweise, eine erfolgreiche lokale Testsuite, einen grünen CI-Nachweis und keine bekannten npm-Schwachstellen. Mit der anschließenden Dokumentationskorrektur ist QualityOps Lab als fokussierter Portfolio-MVP für Bewerbungen geeignet. Weitere Funktionen sind vorerst nicht erforderlich.
+
+Ein möglicher nächster Veröffentlichungsschritt ist ein separat freizugebender Versions-Tag `v1.0.0` mit einem kurzen GitHub Release. Dieser Schritt verändert die öffentliche Versionshistorie und gehört deshalb nicht zu dieser Dokumentationsfinalisierung.
