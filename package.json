@@ -5,6 +5,7 @@
   "description": "Praxisnahes QA-Engineering-Portfolio mit Playwright, TypeScript, API-Tests, SQL und CI.",
   "scripts": {
     "test": "playwright test",
+    "test:ai": "playwright test --config=playwright.ai.config.ts",
     "test:headed": "playwright test --headed",
     "test:report": "playwright show-report"
   },
