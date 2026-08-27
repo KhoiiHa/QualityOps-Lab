@@ -1,18 +1,19 @@
-# Testfallkatalog – Web, API und Datenbank
+# Testfallkatalog – Web, API, Datenbank und lokale KI-Evaluation
 
-Dieser Katalog dokumentiert die aktuell automatisierten Testszenarien für die öffentlichen Testsysteme [SauceDemo](https://www.saucedemo.com/) und [JSONPlaceholder](https://jsonplaceholder.typicode.com/) sowie für eine lokale In-Memory-Datenbank. Er verbindet fachliches Testdesign mit den zugehörigen Playwright-Tests.
+Dieser Katalog dokumentiert die aktuell automatisierten Testszenarien für die öffentlichen Testsysteme [SauceDemo](https://www.saucedemo.com/) und [JSONPlaceholder](https://jsonplaceholder.typicode.com/), eine lokale In-Memory-Datenbank sowie eine getrennte lokale KI-Evaluation. Er verbindet fachliches Testdesign mit den zugehörigen Playwright-Tests.
 
 ## Testumgebung
 
 | Merkmal | Wert |
 | --- | --- |
-| Testobjekte | SauceDemo (Web), JSONPlaceholder (API) und feste Bestelldaten (SQLite) |
-| Teststufen | End-to-End-Systemtest, API-Test und Datenprüfung |
+| Testobjekte | SauceDemo (Web), JSONPlaceholder (API), feste Bestelldaten (SQLite) und `qwen3:1.7b` über Ollama (lokale KI) |
+| Teststufen | End-to-End-Systemtest, API-Test, Datenprüfung und lokale KI-Evaluation |
 | Browser | Chromium für Webtests; für API- und Datenprüfungen nicht erforderlich |
 | Datenbank | SQLite über `node:sqlite`, bei jedem Test neu im Arbeitsspeicher erzeugt |
 | Automatisierung | Playwright Test mit TypeScript |
 | Lokale Plattform | macOS |
 | CI-Plattform | Ubuntu Linux über GitHub Actions |
+| KI-Laufzeit | Ollama auf `127.0.0.1:11434`; bewusst nicht Teil der CI |
 
 ## Übersicht und Rückverfolgbarkeit
 
@@ -27,6 +28,7 @@ Dieser Katalog dokumentiert die aktuell automatisierten Testszenarien für die �
 | QOL-API-POSTS-002 | Posts API | negativ | hoch | [`tests/api/posts.spec.ts`](../tests/api/posts.spec.ts) |
 | QOL-DATA-ORDERS-001 | Bestelldaten | positiv | hoch | [`tests/database/orders.spec.ts`](../tests/database/orders.spec.ts) |
 | QOL-DATA-ORDERS-002 | Bestelldaten | negativ | hoch | [`tests/database/orders.spec.ts`](../tests/database/orders.spec.ts) |
+| QOL-AI-BUG-001 | KI-Bug-Analyse | Vertrag und Referenz | mittel | [`ai-tests/bug-report-quality.spec.ts`](../ai-tests/bug-report-quality.spec.ts) |
 
 ## QOL-WEB-LOGIN-001 – Erfolgreiche Anmeldung
 
@@ -338,8 +340,50 @@ Dieser Katalog dokumentiert die aktuell automatisierten Testszenarien für die �
 | 3 | Die Anzahl der gespeicherten Bestellungen abfragen. | Die Anzahl ist `0`; der ungültige Datensatz wurde nicht gespeichert. |
 | 4 | Die Datenbank schließen. | Die temporäre Datenbank wird vollständig verworfen. |
 
+## QOL-AI-BUG-001 – Synthetische Bug-Reports lokal bewerten
+
+| Feld | Inhalt |
+| --- | --- |
+| Ziel | Prüfen, dass ein lokales Sprachmodell drei synthetische Bug-Reports strukturiert beantwortet und eine festgelegte fachliche Mindestqualität erreicht. |
+| Priorität | mittel |
+| Testtyp | KI-Vertragstest mit referenzbasierter Evaluation |
+| Automatisierungsstatus | lokal automatisiert; nicht Bestandteil von `npm test` oder GitHub Actions |
+
+### Voraussetzungen
+
+- Node.js 24 und die festgeschriebenen npm-Abhängigkeiten sind verfügbar.
+- Ollama läuft lokal unter `http://127.0.0.1:11434`.
+- Das Modell `qwen3:1.7b` ist lokal installiert.
+- Es werden keine Cloud-API, kein API-Token und keine produktiven Daten verwendet.
+
+### Testdaten und Referenzbewertungen
+
+| Synthetischer Fall | Erwartete Kategorie | Erwarteter Schweregrad | Erwarteter Beleg |
+| --- | --- | --- | --- |
+| Standardkonto kann die Rechnung eines anderen Kontos herunterladen | `SECURITY` | `HIGH` | Aussage `S2` |
+| Ein einzelner Klick erzeugt zwei identische Bestellungen | `FUNCTIONAL` | `HIGH` | Aussage `S2` |
+| Button-Beschriftung ist abgeschnitten, Funktion bleibt verfügbar | `USABILITY` | `LOW` | Aussage `S2` |
+
+Jeder Fall enthält zwei nummerierte Aussagen. Das Modell muss mit `evidenceId` auf eine vorhandene Aussage verweisen, anstatt einen freien Belegtext zu erfinden.
+
+### Testschritte
+
+| Nr. | Aktion | Erwartetes Ergebnis |
+| --- | --- | --- |
+| 1 | Die lokale Ollama-Modellliste abrufen. | Ollama ist erreichbar und `qwen3:1.7b` ist installiert; andernfalls endet der Test mit einer verständlichen Anleitung. |
+| 2 | Jeden Bug-Report seriell mit Temperatur `0`, festem Seed und einem JSON-Schema an das Modell senden. | Ollama beantwortet alle drei lokalen Anfragen. |
+| 3 | HTTP-Status und Content-Type prüfen. | Jede Antwort liefert Status `200` und JSON. |
+| 4 | Die Modellantwort als JSON einlesen und den technischen Vertrag prüfen. | Genau `category`, `severity`, `summary` und `evidenceId` sind vorhanden; Werte und Beleg-ID stammen aus den erlaubten Mengen. |
+| 5 | Kategorie, Schweregrad und Beleg-ID mit der jeweiligen Referenzbewertung vergleichen. | Mindestens zwei der drei vollständigen Referenzbewertungen stimmen überein. |
+| 6 | Die Einzelergebnisse als `ai-evaluation.json` an das Playwright-Testergebnis anhängen. | Soll, Ist und Übereinstimmungsstatus bleiben für die Auswertung strukturiert verfügbar. |
+
+Die Qualitätsschwelle von zwei aus drei gilt ausschließlich für diesen kleinen, festen Datensatz. Sie ist keine allgemeine Genauigkeitsangabe für `qwen3:1.7b`.
+
 ## Bekannte Grenzen
 
 - Die Ergebnisse hängen von der Erreichbarkeit und dem aktuellen Zustand der externen Testsysteme ab.
 - Die Webtests decken derzeit nur Chromium ab.
 - Weitere Checkout-Pflichtfelder und Varianten, API-Methoden, persistente Datenbanken, Tabellenbeziehungen und mobile Tests sind noch nicht Bestandteil dieses Katalogs.
+- Die KI-Evaluation benötigt eine lokale Ollama-Installation und wird nicht durch GitHub Actions verifiziert.
+- Drei synthetische KI-Fälle reichen nicht für eine statistisch belastbare Bewertung oder einen Modellvergleich.
+- Modellausgaben können sich trotz niedriger Temperatur durch Modell-, Laufzeit- oder Hardwareänderungen unterscheiden.
